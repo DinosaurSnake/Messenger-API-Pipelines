@@ -5,5 +5,16 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: |
-    echo hello world
+- task: DownloadSecureFile@1
+  name: downloadAppSettings
+  displayName: Download appsettings.json file
+  inputs:
+    secureFile: '$(pleyce-messenger-api-appsettings)'
+- task: CopyFilesOverSSH@0
+  displayName: Publish appsettings file
+  inputs:
+    sshEndpoint: $(sshServer)
+    sourceFolder: $(Agent.TempDirectory)
+    contents: '*appsettings.json'
+    targetFolder: 'Workspace/Messenger'
+    readyTimeout: '20000'
