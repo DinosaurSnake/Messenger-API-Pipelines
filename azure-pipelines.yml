@@ -25,9 +25,11 @@ steps:
 - task: SSH@0
   displayName: Run messenger-api service
   inputs:
-    sshEndpoint: $(sshServer)
+    sshEndpoint: '$(sshServer)'
     runOptions: 'inline'
     inline: |
       cd $(messengerWorkspace)
       mv *appsettings.json appsettings.json
       docker-compose stop && docker-compose up -d
+    failOnStdErr: false
+    readyTimeout: '20000'
