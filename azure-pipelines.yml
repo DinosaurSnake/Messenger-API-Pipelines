@@ -29,7 +29,7 @@ steps:
     runOptions: 'inline'
     inline: |
       cd $(messengerWorkspace)
-      mv -f *appsettings.json appsettings.json
+      mv -f *-messenger-api-appsettings.json appsettings.json
       curl -L https://raw.githubusercontent.com/DinosaurSnake/Messenger-API-Pipelines/azure-pipelines/docker-compose.yml > docker-compose.yml
       docker-compose stop && docker-compose up -d
     failOnStdErr: false
