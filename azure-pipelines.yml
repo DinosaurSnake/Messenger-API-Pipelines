@@ -29,8 +29,5 @@ steps:
     runOptions: 'inline'
     inline: |
       cd $(messengerWorkspace)
-      docker run \
-        --name "messenger-api" \
-        -dp 5000:80 \
-        --volume $PWD/$(messengerApiSettingsFile):/app/appsettings.json \
-        lecarvalho/messenger-api
+      mv *appsettings.json appsettings.json
+      docker-compose stop && docker-compose up -d

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+    messenger-api:
+        image: lecarvalho/messenger-api:latest
+        restart: always
+        volumes:
+            - ./appsettings.json:/app/appsettings.json
+networks:
+    default:
+      external: true
+      name: nginx-service
