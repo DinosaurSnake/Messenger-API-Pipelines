@@ -19,9 +19,7 @@ steps:
   inputs:
     sshEndpoint: $(sshServer)
     sourceFolder: $(Agent.TempDirectory)
-    contents: |
-      *appsettings.json
-      Messenger-API-Pipelines/docker-compose.yml
+    contents: '*appsettings.json'
     targetFolder: '$(messengerWorkspace)'
     readyTimeout: '20000'
 - task: SSH@0
@@ -32,8 +30,7 @@ steps:
     inline: |
       cd $(messengerWorkspace)
       mv *appsettings.json appsettings.json -f
-      mv Messenger-API-Pipelines/* .
-      rm -R Messenger-API-Pipelines
+      curl -L https://raw.githubusercontent.com/DinosaurSnake/Messenger-API-Pipelines/azure-pipelines/docker-compose.yml > docker-compose.yml
       docker-compose stop && docker-compose up -d
     failOnStdErr: false
     readyTimeout: '20000'
