@@ -1,6 +1,10 @@
 trigger:
 - main
 
+variables:
+  - name: messengerWorkspace
+    value: /Workspace/Messenger
+
 pool:
   vmImage: ubuntu-latest
 
@@ -16,5 +20,17 @@ steps:
     sshEndpoint: $(sshServer)
     sourceFolder: $(Agent.TempDirectory)
     contents: '*appsettings.json'
-    targetFolder: 'Workspace/Messenger'
+    targetFolder: '$(messengerWorkspace)'
     readyTimeout: '20000'
+- task: SSH@0
+  displayName: Run messenger-api service
+  inputs:
+    sshEndpoint: $(sshServer)
+    runOptions: 'inline'
+    inline: |
+      cd $(messengerWorkspace)
+      docker run \
+        --name "messenger-api" \
+        -dp 5000:80 \
+        --volume $PWD/$(messengerApiSettingsFile):/app/appsettings.json \
+        lecarvalho/messenger-api
