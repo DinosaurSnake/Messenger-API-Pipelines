@@ -31,7 +31,7 @@ steps:
     runOptions: 'inline'
     inline: |
       cd $(messengerWorkspace)
-      mv *appsettings.json appsettings.json
+      mv *appsettings.json appsettings.json -f
       mv Messenger-API-Pipelines/* .
       rm -R Messenger-API-Pipelines
       docker-compose stop && docker-compose up -d
