@@ -1,9 +1,36 @@
 trigger:
 - main
 
+variables:
+  - name: messengerWorkspace
+    value: /Workspace/Messenger
+
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: |
-    echo hello world
+- task: DownloadSecureFile@1
+  name: downloadAppSettings
+  displayName: Download appsettings.json file
+  inputs:
+    secureFile: '$(messengerApiSettingsFile)'
+- task: CopyFilesOverSSH@0
+  displayName: Publish appsettings file
+  inputs:
+    sshEndpoint: $(sshServer)
+    sourceFolder: $(Agent.TempDirectory)
+    contents: '*appsettings.json'
+    targetFolder: '$(messengerWorkspace)'
+    readyTimeout: '20000'
+- task: SSH@0
+  displayName: Run messenger-api service
+  inputs:
+    sshEndpoint: '$(sshServer)'
+    runOptions: 'inline'
+    inline: |
+      cd $(messengerWorkspace)
+      mv -f *-messenger-api-appsettings.json appsettings.json
+      curl -L https://raw.githubusercontent.com/DinosaurSnake/Messenger-API-Pipelines/azure-pipelines/docker-compose.yml > docker-compose.yml
+      docker-compose stop && docker-compose up -d
+    failOnStdErr: false
+    readyTimeout: '20000'
